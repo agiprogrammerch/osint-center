@@ -8,6 +8,9 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.css"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.css"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/satellite.js/4.0.0/satellite.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.min.js"></script>
@@ -44,7 +47,9 @@
       <button class="hbtn" onclick="logout()">&#9211; LOGOUT</button>
     </div>
   </div>
-  <div id="ticker"><div id="t-track"></div></div>
+  <div id="ticker">
+    <div id="t-outer"><div id="t-inner"></div><div id="t-inner-dup"></div></div>
+  </div>
   <div id="nav">
     <div class="tab active" data-t="overview" onclick="switchTab(this)">&#11041; OVERVIEW</div>
     <div class="tab" data-t="flights" onclick="switchTab(this)">&#9992; AIR TRAFFIC</div>
