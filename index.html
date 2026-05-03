@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOID//MATRIX — OSINT COMMAND CENTER</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/satellite.js/4.0.0/satellite.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.min.js"></script>
+</head>
+<body>
+<div id="login-screen">
+  <div class="lbox" id="lbox">
+    <div class="lc tl"></div><div class="lc tr"></div><div class="lc bl"></div><div class="lc br"></div>
+    <div class="l-logo">VOID<em>//</em>MATRIX</div>
+    <div class="l-sub">OSINT COMMAND CENTER <span style="animation:blink 1s infinite;display:inline-block">_</span></div>
+    <div><div class="l-lbl">OPERATOR ID</div><input class="l-inp" id="lu" type="text" autocomplete="off" placeholder="ENTER OPERATOR ID" onkeydown="if(event.key==='Enter')document.getElementById('lp').focus()"/></div>
+    <div><div class="l-lbl">ACCESS KEY</div><input class="l-inp" id="lp" type="password" autocomplete="off" placeholder="ENTER ACCESS KEY" onkeydown="if(event.key==='Enter')doLogin()"/></div>
+    <button class="l-btn" onclick="doLogin()">// AUTHENTICATE &amp; ENTER //</button>
+    <div id="l-err"></div>
+    <div class="l-foot">VOID//MATRIX // PRIVATE OSINT SYSTEM // UNAUTHORIZED ACCESS PROHIBITED</div>
+    <div class="l-hint">SYS_ADMIN: agiprogrammer // KEY: TnEq^2&amp;94@6!eMH&amp;hqM$</div>
+  </div>
+</div>
+<div id="loader" style="display:none">
+  <div class="ld-title">VOID<span style="color:var(--gm)">//</span>MATRIX</div>
+  <div style="font-size:10px;color:var(--gm);letter-spacing:3px">INITIALIZING INTELLIGENCE SYSTEMS...</div>
+  <div id="ld-bar-w"><div id="ld-bar"></div></div>
+  <div id="ld-msg">STARTING...</div>
+</div>
+<div id="app" style="display:none">
+  <div id="hdr">
+    <div class="logo">VOID<em>//</em>MATRIX <em style="font-size:10px;font-weight:400;letter-spacing:2px">OSINT CMD</em></div>
+    <div id="hdr-r">
+      <div><span class="dot g"></span>LIVE</div>
+      <div class="hbg r"><span class="dot r"></span><span id="alert-n">0</span> ALERTS</div>
+      <div class="hbg y" id="lyr-badge">8 LAYERS</div>
+      <button class="hbtn" id="sat-btn" onclick="toggleSat()">🛰 SAT VIEW</button>
+      <div id="utc">--:--:-- UTC</div>
+      <button class="hbtn" onclick="logout()">&#9211; LOGOUT</button>
+    </div>
+  </div>
+  <div id="ticker"><div id="t-track"></div></div>
+  <div id="nav">
+    <div class="tab active" data-t="overview" onclick="switchTab(this)">&#11041; OVERVIEW</div>
+    <div class="tab" data-t="flights" onclick="switchTab(this)">&#9992; AIR TRAFFIC</div>
+    <div class="tab" data-t="ships" onclick="switchTab(this)">&#9875; MARITIME</div>
+    <div class="tab" data-t="military" onclick="switchTab(this)">&#127919; MILITARY</div>
+    <div class="tab" data-t="wars" onclick="switchTab(this)">&#9876; WAR ZONES</div>
+    <div class="tab" data-t="cyber" onclick="switchTab(this)">&#128187; CYBER</div>
+    <div class="tab" data-t="disasters" onclick="switchTab(this)">&#9889; DISASTERS</div>
+    <div class="tab" data-t="satellite" onclick="switchTab(this)">&#128752; SATELLITE</div>
+    <div class="tab" data-t="news" onclick="switchTab(this)">&#128225; INTEL FEEDS</div>
+    <div class="tab" data-t="sources" onclick="switchTab(this)">&#128279; SOURCES</div>
+  </div>
+  <div id="body">
+    <div id="sb">
+      <div class="sbp"><div class="sbh">// GLOBAL STATS <span id="stats-ts">--:--</span></div>
+        <div class="sgrid">
+          <div class="stat"><span class="sv r" id="s-fl">--</span><span class="sl">AIRBORNE</span></div>
+          <div class="stat"><span class="sv c" id="s-sh">--</span><span class="sl">VESSELS</span></div>
+          <div class="stat"><span class="sv r" id="s-cf">--</span><span class="sl">CONFLICTS</span></div>
+          <div class="stat"><span class="sv y" id="s-eq">--</span><span class="sl">QUAKES 24H</span></div>
+          <div class="stat"><span class="sv y" id="s-fi">--</span><span class="sl">DISASTERS</span></div>
+          <div class="stat"><span class="sv c" id="s-cy">--</span><span class="sl">BOTNET C2s</span></div>
+        </div>
+      </div>
+      <div class="sbp grow"><div class="sbh">// LIVE EVENT LOG <span id="ev-n">0 EVENTS</span></div><div id="evlog"></div></div>
+    </div>
+    <div id="mc">
+      <div id="map"></div>
+      <div id="mleg">
+        <div class="leg" data-l="flights" onclick="toggleLyr(this)"><div class="ldot" style="background:var(--g)"></div>FLIGHTS</div>
+        <div class="leg" data-l="military" onclick="toggleLyr(this)"><div class="ldot" style="background:var(--org)"></div>MILITARY</div>
+        <div class="leg" data-l="ships" onclick="toggleLyr(this)"><div class="ldot" style="background:var(--cyn)"></div>SHIPS</div>
+        <div class="leg" data-l="conflicts" onclick="toggleLyr(this)"><div class="ldot" style="background:var(--red)"></div>CONFLICTS</div>
+        <div class="leg" data-l="quakes" onclick="toggleLyr(this)"><div class="ldot" style="background:var(--yel)"></div>QUAKES</div>
+        <div class="leg" data-l="fires" onclick="toggleLyr(this)"><div class="ldot" style="background:#ff6600"></div>FIRES</div>
+        <div class="leg" data-l="cyber" onclick="toggleLyr(this)"><div class="ldot" style="background:var(--cyn)"></div>CYBER</div>
+        <div class="leg" data-l="satellites" onclick="toggleLyr(this)"><div class="ldot" style="background:var(--pur)"></div>SATS</div>
+        <div id="src-badge">SRC: --</div>
+        <div id="minfo">CLICK ANY MARKER FOR DETAILS</div>
+      </div>
+    </div>
+    <div id="rp">
+      <div class="sbp" style="flex-shrink:0"><div class="sbh" id="rp-head">// INTEL FEED <span id="rp-st">--</span></div></div>
+      <div id="rpbody"></div>
+    </div>
+  </div>
+  <div id="sbar"><span>VOID//MATRIX OSINT // PUBLIC OSINT SOURCES // NO CLASSIFIED DATA</span><span id="sb-r">VOIDMATRIX</span></div>
+</div>
+<script src="main.js"></script>
+</body>
+</html>
