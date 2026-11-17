@@ -1,0 +1,61 @@
+/* ══════════════════════════════════════════════════════════════
+   LAYOUT — responsive shell for small/medium screens (e.g. 1366x786)
+   Default chrome: 286px sidebar + 300px intel panel.
+   <= 1440px : 240px / 262px  -> map gains ~84px
+   <= 1200px : 216px / 240px
+   Panels can also be toggled away entirely (button or "P").
+   ══════════════════════════════════════════════════════════════ */
+
+@media (max-width: 1440px) {
+  #sb{width:240px;min-width:240px;}
+  #rp{width:262px;min-width:262px;}
+  .sv{font-size:16px;}
+  .stat{padding:6px 8px;}
+  .atk-pin .atk-ring{animation-duration:2.4s;}
+}
+
+@media (max-width: 1200px) {
+  #sb{width:216px;min-width:216px;}
+  #rp{width:240px;min-width:240px;}
+  .sv{font-size:15px;}
+  .sl{font-size:7px;}
+}
+
+/* ── collapsed panels: map uses the full width ── */
+#app.panels-off #sb,
+#app.panels-off #rp{display:none;}
+#app.panels-off #mc{flex:1 1 100%;}
+
+/* smaller cluster icons so they don't dominate a narrow map */
+@media (max-width: 1500px) {
+  .marker-cluster-small,.marker-cluster-medium,.marker-cluster-large{
+    width:26px!important;height:26px!important;border-radius:50%!important;}
+  .marker-cluster-small div,.marker-cluster-medium div,.marker-cluster-large div{
+    width:21px!important;height:21px!important;line-height:21px!important;font-size:9px!important;}
+  .vm-btn{width:24px;height:24px;font-size:12px;}
+  .vm-ctrl{gap:2px;}
+}
+
+@media (max-width: 1100px) {
+  .marker-cluster-small,.marker-cluster-medium,.marker-cluster-large{
+    width:22px!important;height:22px!important;}
+  .marker-cluster-small div,.marker-cluster-medium div,.marker-cluster-large div{
+    width:18px!important;height:18px!important;line-height:18px!important;font-size:8px!important;}
+}
+
+/* ── header item compaction on narrow screens ── */
+@media (max-width: 1440px) {
+  #hdr-r{gap:8px;}
+  #hdr{padding:0 10px;}
+  .logo{font-size:13px;letter-spacing:2px;}
+  #utc{font-size:12px;}
+  .hbtn{padding:2px 7px;}
+  .hbg{padding:2px 6px;}
+}
+
+/* ── popup sizing on small maps ── */
+@media (max-width: 1500px) {
+  .leaflet-popup-content-wrapper{min-width:190px!important;}
+  .pr{line-height:1.7!important;}
+  .pt{font-size:10px!important;}
+}

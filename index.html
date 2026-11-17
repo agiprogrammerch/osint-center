@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOID//MATRIX — OSINT COMMAND CENTER</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg"/>
+
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/shell.css">
+<link rel="stylesheet" href="css/panels.css">
+<link rel="stylesheet" href="css/map.css">
+<link rel="stylesheet" href="css/modal.css">
+<link rel="stylesheet" href="css/layout.css">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.css"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/satellite.js/4.0.0/satellite.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.5.17/hls.min.js"></script>
+</head>
+<body>
+
+<!-- STATIC NOTICE — visible until main.js boots; covers file:// or JS failures -->
+<div id="boot-warn" class="pwarn" style="display:block">
+  <b>STARTING</b> — if this does not clear, serve the app with
+  <code>python3 serve.py</code> and open <code>http://127.0.0.1:8000</code> (see README.md).
+</div>
+
+<!-- PROXY WARNING (shown only when the local server/proxy is unavailable) -->
+<div id="proxy-warn" class="pwarn" style="display:none">
+  <b>LOCAL PROXY OFFLINE</b> — start the bundled server first:
+  <code>python3 serve.py</code> &nbsp;(see README.md). Live feeds cannot load without it.
+</div>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="lbox" id="lbox">
+    <div class="lc tl"></div><div class="lc tr"></div><div class="lc bl"></div><div class="lc br"></div>
+    <div class="l-logo">VOID<em>//</em>MATRIX</div>
+    <div class="l-sub">OSINT COMMAND CENTER <span style="animation:blink 1s infinite;display:inline-block">_</span></div>
+    <div>
+      <div class="l-lbl">OPERATOR ID</div>
+      <input class="l-inp" id="lu" type="text" autocomplete="off" placeholder="ENTER OPERATOR ID"/>
+    </div>
+    <div>
+      <div class="l-lbl">ACCESS KEY</div>
+      <input class="l-inp" id="lp" type="password" autocomplete="off" placeholder="ENTER ACCESS KEY"/>
+    </div>
+    <button class="l-btn" data-action="login">// AUTHENTICATE &amp; ENTER //</button>
+    <div id="l-err"></div>
+    <div class="l-foot">VOID//MATRIX // PRIVATE OSINT SYSTEM // UNAUTHORIZED ACCESS PROHIBITED</div>
+  </div>
+</div>
+
+<!-- LOADER -->
+<div id="loader" style="display:none">
+  <div class="ld-title">VOID<span style="color:var(--gm)">//</span>MATRIX</div>
+  <div style="font-size:10px;color:var(--gm);letter-spacing:3px">INITIALIZING INTELLIGENCE SYSTEMS...</div>
+  <div id="ld-bar-w"><div id="ld-bar"></div></div>
+  <div id="ld-msg">STARTING...</div>
+</div>
+
+<!-- APP -->
+<div id="app" style="display:none">
+  <div id="hdr">
+    <div class="logo">VOID<em>//</em>MATRIX <em style="font-size:10px;font-weight:400;letter-spacing:2px">OSINT CMD</em></div>
+    <div id="hdr-r">
+      <div><span class="dot g"></span>LIVE</div>
+      <div class="hbg r"><span class="dot r"></span><span id="alert-n">0</span> ALERTS</div>
+      <div class="hbg y" id="lyr-badge">0 LAYERS</div>
+      <button class="hbtn" id="panels-btn" data-action="toggle-panels" title="Toggle side panels (P)">◧ PANELS</button>
+      <button class="hbtn" id="sat-btn" data-action="toggle-sat">🛰 SAT VIEW</button>
+      <div id="utc">--:--:-- UTC</div>
+      <button class="hbtn" data-action="logout">&#9211; LOGOUT</button>
+    </div>
+  </div>
+
+  <!-- TICKER -->
+  <div id="ticker">
+    <div id="t-outer">
+      <div id="t-inner"></div>
+      <div id="t-inner-dup"></div>
+    </div>
+  </div>
+
+  <div id="nav"></div>
+
+  <div id="body">
+    <div id="sb">
+      <div class="sbp">
+        <div class="sbh">// GLOBAL STATS <span id="stats-ts">--:--</span></div>
+        <div class="sgrid">
+          <div class="stat"><span class="sv r" id="s-fl">--</span><span class="sl">AIRBORNE</span></div>
+          <div class="stat"><span class="sv c" id="s-sh">--</span><span class="sl">VESSELS (AIS)</span></div>
+          <div class="stat"><span class="sv r" id="s-cf">--</span><span class="sl">CONFLICTS</span></div>
+          <div class="stat"><span class="sv y" id="s-eq">--</span><span class="sl">QUAKES 24H</span></div>
+          <div class="stat"><span class="sv y" id="s-fi">--</span><span class="sl">DISASTERS</span></div>
+          <div class="stat"><span class="sv c" id="s-cy">--</span><span class="sl">BOTNET C2s</span></div>
+        </div>
+      </div>
+      <div class="sbp grow">
+        <div class="sbh">// LIVE EVENT LOG <span id="ev-n">0 EVENTS</span></div>
+        <div id="evlog"></div>
+      </div>
+    </div>
+
+    <div id="mc">
+      <div id="map"></div>
+      <div id="crosshair"><span class="ch-h"></span><span class="ch-v"></span><span class="ch-dot"></span></div>
+      <div id="coord-tip" title="Click to copy coordinates">LAT/LNG  --.----, ---.-----</div>
+      <div id="mleg">
+        <div class="leg" data-l="flights"    data-action="toggle-lyr" title="Click: show/hide · Double-click: zoom to data"><div class="ldot" style="background:var(--g)"></div>FLIGHTS</div>
+        <div class="leg" data-l="military"   data-action="toggle-lyr" title="Click: show/hide · Double-click: zoom to data"><div class="ldot" style="background:var(--org)"></div>MILITARY</div>
+        <div class="leg" data-l="ships"      data-action="toggle-lyr" title="Click: show/hide · Double-click: zoom to data"><div class="ldot" style="background:var(--cyn)"></div>SHIPS</div>
+        <div class="leg" data-l="conflicts"  data-action="toggle-lyr" title="Click: show/hide · Double-click: zoom to data"><div class="ldot" style="background:var(--red)"></div>CONFLICTS</div>
+        <div class="leg" data-l="quakes"     data-action="toggle-lyr" title="Click: show/hide · Double-click: zoom to data"><div class="ldot" style="background:var(--yel)"></div>QUAKES</div>
+        <div class="leg" data-l="fires"      data-action="toggle-lyr" title="Click: show/hide · Double-click: zoom to data"><div class="ldot" style="background:#ff6600"></div>FIRES</div>
+        <div class="leg" data-l="cyber"      data-action="toggle-lyr" title="Click: show/hide · Double-click: zoom to data"><div class="ldot" style="background:var(--cyn)"></div>CYBER</div>
+        <div class="leg" data-l="satellites" data-action="toggle-lyr" title="Click: show/hide · Double-click: zoom to data"><div class="ldot" style="background:var(--pur)"></div>SATS</div>
+        <div class="leg" data-l="cctv"       data-action="toggle-lyr" title="Click: show/hide · Double-click: zoom to data"><div class="ldot" style="background:#ffaa00"></div>CCTV</div>
+        <div id="src-badge">SRC: --</div>
+        <div id="minfo" title="FPS · objects · coordinate format">HOVER MAP FOR COORDINATES</div>
+      </div>
+    </div>
+
+    <div id="rp">
+      <div class="sbp" style="flex-shrink:0">
+        <div class="sbh" id="rp-head"><span class="rp-title">// INTEL FEED</span><span id="rp-st">--</span></div>
+      </div>
+      <div id="rpbody"></div>
+    </div>
+  </div>
+
+  <div id="sbar">
+    <span>VOID//MATRIX OSINT // PUBLIC OSINT SOURCES // NO CLASSIFIED DATA</span>
+    <span id="sb-r">VOIDMATRIX</span>
+  </div>
+</div>
+
+<!-- CCTV MODAL -->
+<div id="cctv-modal" class="cctv-modal" style="display:none">
+  <div class="cctv-box">
+    <button class="cctv-close" data-action="close-cctv">&times;</button>
+    <div class="cctv-head">
+      <div id="cctv-title" class="cctv-title">CCTV Feed</div>
+      <div id="cctv-sub" class="cctv-sub"></div>
+    </div>
+    <div id="cctv-stage" class="cctv-stage">
+      <video id="cctv-video" class="cctv-vid" playsinline muted loop controls style="display:none"></video>
+      <img id="cctv-img" class="cctv-img" alt="live camera frame" style="display:none" />
+      <div id="cctv-msg" class="cctv-msg" style="display:none"></div>
+    </div>
+    <div class="cctv-bar">
+      <span id="cctv-clock" class="cctv-clock">--:--:--</span>
+      <span id="cctv-live" class="cctv-live" style="display:none">● LIVE HLS</span>
+      <span id="cctv-mode" class="cctv-mode"></span>
+      <a id="cctv-src" class="cctv-btn" href="#" target="_blank" rel="noopener">STREAM URL</a>
+      <button class="cctv-btn" data-action="cctv-reload">RELOAD</button>
+    </div>
+    <div class="cctv-note">Live HLS video stream (hls.js) — free public cameras, no API key · TfL JamCams (London) fall back to 2s snapshots</div>
+  </div>
+</div>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

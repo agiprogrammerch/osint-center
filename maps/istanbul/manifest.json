@@ -1,0 +1,18 @@
+{
+ "name": "Istanbul",
+ "source": "osm-de",
+ "filter": "dark",
+ "tileUrl": "{z}/{x}/{y}.png",
+ "bbox": [
+  40.75,
+  28.45,
+  41.35,
+  29.55
+ ],
+ "minZoom": 0,
+ "maxZoom": 19,
+ "tiles": 39706,
+ "downloadedAt": "2026-11-13 12:28:59",
+ "updatedAt": "2026-11-13 12:32:26",
+ "bytes": 290617739
+}

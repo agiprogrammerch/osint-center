@@ -1,0 +1,22 @@
+/* ══════════════════════════════════════════════════════════════
+   MODAL — CCTV live-camera viewer (live HLS video + still snapshot)
+   ══════════════════════════════════════════════════════════════ */
+.cctv-modal{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.88);display:flex;align-items:center;justify-content:center;padding:20px;}
+.cctv-box{background:#001800;border:1px solid var(--g);padding:10px;max-width:92%;max-height:94%;position:relative;box-shadow:0 0 40px rgba(0,255,65,.2);display:flex;flex-direction:column;gap:8px;}
+.cctv-close{position:absolute;top:4px;right:8px;background:none;border:none;color:var(--g);font-size:22px;cursor:pointer;line-height:1;z-index:2;}
+.cctv-close:hover{color:#fff;}
+.cctv-head{display:flex;flex-direction:column;gap:2px;padding-right:24px;}
+.cctv-title{color:var(--g);font-size:14px;letter-spacing:1px;}
+.cctv-sub{color:var(--gm);font-size:9px;letter-spacing:1px;}
+.cctv-stage{width:780px;max-width:88vw;height:460px;max-height:64vh;background:#000;display:flex;align-items:center;justify-content:center;overflow:hidden;border:1px solid var(--b1);position:relative;}
+.cctv-img{max-width:100%;max-height:100%;object-fit:contain;}
+.cctv-vid{width:100%;height:100%;max-height:64vh;background:#000;display:block;}
+.cctv-msg{position:absolute;inset:0;display:none;align-items:center;justify-content:center;padding:24px;text-align:center;font-size:11px;letter-spacing:1px;color:#ff8080;background:rgba(0,0,0,.55);line-height:1.6;}
+.cctv-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.cctv-clock{font-size:10px;color:var(--g);letter-spacing:1px;margin-right:auto;}
+.cctv-mode{font-size:9px;color:var(--cyn);letter-spacing:1px;}
+.cctv-live{font-size:9px;color:#ff2244;letter-spacing:1px;animation:blink 1.5s infinite;border:1px solid rgba(255,34,68,.4);padding:2px 6px;}
+.cctv-btn{background:var(--gdk);border:1px solid var(--b2);color:var(--gm);font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1px;padding:4px 10px;cursor:pointer;text-decoration:none;transition:all .15s;}
+.cctv-btn:hover{color:var(--g);border-color:var(--g);box-shadow:var(--glow);}
+.cctv-btn.on{color:#001200;background:var(--g);border-color:var(--g);}
+.cctv-note{color:var(--gm);font-size:9px;letter-spacing:1px;text-align:center;}

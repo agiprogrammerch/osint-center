@@ -1,0 +1,97 @@
+/* ══════════════════════════════════════════════════════════════
+   MAP — map container, legend, coordinate tooltip, leaflet overrides
+   ══════════════════════════════════════════════════════════════ */
+.leaflet-pane{z-index:200!important;}.leaflet-tile-pane{z-index:200!important;}
+.leaflet-overlay-pane{z-index:210!important;}.leaflet-marker-pane{z-index:220!important;}
+.leaflet-tooltip-pane{z-index:230!important;}.leaflet-popup-pane{z-index:500!important;}
+.leaflet-top,.leaflet-bottom{z-index:600!important;}.leaflet-control{z-index:600!important;}
+
+/* ── custom pane z-order ── */
+.leaflet-grat-pane{z-index:203!important;}
+.leaflet-night-pane{z-index:205!important;}
+
+#mc{flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative;}
+#map{flex:1;background:#000d00;}
+.leaflet-container{background:#000500!important;}
+.marker-cluster-small,.marker-cluster-medium,.marker-cluster-large{background:rgba(0,255,65,.1)!important;}
+.marker-cluster-small div,.marker-cluster-medium div,.marker-cluster-large div{background:rgba(0,255,65,.28)!important;color:var(--g)!important;font-family:'Share Tech Mono',monospace!important;font-size:10px!important;}
+
+/* ── geo search control (top-left of the map) ── */
+.geo-search{display:flex;gap:4px;align-items:center;margin:10px 0 0 10px!important;background:none!important;border:none!important;box-shadow:none!important;flex-wrap:wrap;max-width:calc(100% - 80px);}
+.geo-input{width:250px;background:rgba(0,12,2,.92);border:1px solid var(--b2);color:var(--g);font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1px;padding:6px 8px;outline:none;border-radius:2px;}
+.geo-input:focus{border-color:var(--g);box-shadow:var(--glow);}
+.geo-input::placeholder{color:rgba(0,255,65,.35);}
+.geo-btn{background:var(--gdk);border:1px solid var(--b2);color:var(--gm);font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1px;padding:6px 9px;cursor:pointer;border-radius:2px;transition:all .15s;}
+.geo-btn:hover{color:var(--g);border-color:var(--g);box-shadow:var(--glow);}
+.geo-hint{width:100%;font-size:8px;letter-spacing:1px;color:var(--cyn);padding:1px 2px;min-height:10px;}
+.geo-results{display:flex;flex-direction:column;gap:1px;width:100%;max-height:180px;overflow-y:auto;}
+.geo-result{background:rgba(0,10,4,.9);border:1px solid var(--b1);color:var(--gm);font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:.5px;text-align:left;padding:4px 6px;cursor:pointer;border-radius:2px;}
+.geo-result:hover{color:var(--g);border-color:var(--b2);background:#001a08;}
+.geo-pin{background:none!important;border:none!important;}
+.geo-pin .geo-pin-dot{position:absolute;left:50%;top:50%;width:7px;height:7px;margin:-4px 0 0 -4px;background:#ffdd00;border:1px solid #ffee55;border-radius:50%;box-shadow:0 0 8px #ffdd00;}
+.geo-pin .geo-pin-ring{position:absolute;left:0;top:0;width:16px;height:16px;border:1px solid #ffdd00;border-radius:50%;animation:geo-pulse 2s ease-out infinite;}
+@keyframes geo-pulse{0%{transform:scale(.4);opacity:.9}70%{transform:scale(1.8);opacity:0}100%{transform:scale(1.8);opacity:0}}
+@media (max-width: 1500px){ .geo-input{width:206px;} }
+
+/* ── control stack (zoom, overlays) ── */
+.vm-ctrl{display:flex;flex-direction:column;gap:3px;margin:10px 10px 0 0!important;background:none!important;border:none!important;box-shadow:none!important;}
+.vm-ctrl:last-child{margin-bottom:34px!important;}
+.vm-btn{width:26px;height:26px;display:flex;align-items:center;justify-content:center;background:rgba(0,20,4,.88);border:1px solid var(--b2);color:var(--gm);font-family:'Share Tech Mono',monospace;font-size:13px;line-height:1;cursor:pointer;transition:all .15s;padding:0;}
+.vm-btn:hover{color:var(--g);border-color:var(--g);box-shadow:var(--glow);background:#002a0a;}
+.vm-btn.on{color:#001200;background:var(--g);border-color:var(--g);box-shadow:var(--glow);}
+#vm-offline{color:var(--cyn);border-color:rgba(0,238,255,.4);}
+#vm-offline:hover{color:var(--cyn);border-color:var(--cyn);box-shadow:0 0 8px rgba(0,238,255,.4);}
+.leaflet-bottom .vm-ctrl{margin:0 10px 10px 0!important;}
+
+/* ── live attack origin pins (cyber layer) ── */
+.atk-pin{background:none!important;border:none!important;}
+.atk-pin .atk-ring{position:absolute;left:0;top:0;border:1px solid;border-radius:50%;opacity:.85;animation:atk-pulse 2s ease-out infinite;}
+.atk-pin .atk-ring:nth-child(2){animation-delay:.7s;}
+.atk-pin .atk-dot{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);border-radius:50%;box-shadow:0 0 6px currentColor;}
+@keyframes atk-pulse{0%{transform:scale(.45);opacity:.9}70%{transform:scale(1.9);opacity:0}100%{transform:scale(1.9);opacity:0}}
+
+/* ── scale bar ── */
+/* keep the Leaflet scale bar clear of the coordinate readout */
+.leaflet-bottom.leaflet-left .leaflet-control-scale{margin-bottom:6px!important;margin-left:10px!important;}
+.leaflet-control-scale-line{background:rgba(0,12,2,.8)!important;border:1px solid var(--b2)!important;border-top:none!important;color:var(--g)!important;font-family:'Share Tech Mono',monospace!important;font-size:9px!important;letter-spacing:1px;padding:1px 5px!important;}
+
+/* ── graticule labels + subsolar marker ── */
+.grat-lbl{font-family:'Share Tech Mono',monospace;font-size:8px;color:rgba(0,255,65,.45);white-space:nowrap;text-shadow:0 0 3px #000;pointer-events:none;}
+.grat-lbl-b{margin-top:-14px!important;}
+.subsolar{font-size:12px;color:#ffdd00;text-shadow:0 0 6px #ffdd00;pointer-events:none;}
+
+/* ── crosshair ── */
+#crosshair{position:absolute;inset:0;z-index:690;pointer-events:none;display:none;}
+#mc.cross #crosshair{display:block;}
+#crosshair .ch-h,#crosshair .ch-v{position:absolute;background:rgba(0,255,65,.35);}
+#crosshair .ch-h{left:0;right:0;top:50%;height:1px;}
+#crosshair .ch-v{top:0;bottom:0;left:50%;width:1px;}
+#crosshair .ch-dot{position:absolute;left:50%;top:50%;width:5px;height:5px;margin:-3px 0 0 -3px;border:1px solid var(--g);border-radius:50%;box-shadow:var(--glow);}
+
+/* ── fullscreen (native + fallback class) ── */
+#mc:fullscreen{background:var(--bg);}
+#mc:-webkit-full-screen{background:var(--bg);}
+#mc.vm-fs{position:fixed;inset:0;z-index:9000;background:var(--bg);}
+
+/* ── coordinate readout ── */
+#coord-tip{position:absolute;bottom:76px;left:10px;z-index:700;background:rgba(0,10,0,.75);border:1px solid var(--b1);padding:4px 10px;font-size:10px;color:var(--g);letter-spacing:1px;pointer-events:auto;cursor:copy;font-family:'Share Tech Mono',monospace;border-radius:2px;}
+#coord-tip:hover{border-color:var(--b2);box-shadow:var(--glow);}
+
+
+/* ── legend ── */
+#mleg{display:flex;flex-wrap:wrap;border-top:1px solid var(--b1);background:#000800;flex-shrink:0;user-select:none;}
+.leg{display:flex;align-items:center;gap:5px;padding:5px 10px;font-size:9px;letter-spacing:1px;color:var(--gm);border-right:1px solid var(--b1);cursor:pointer;transition:all .15s;}
+.leg:hover{background:#001500;color:var(--g);}
+.leg.off{opacity:.3;}
+.ldot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+#src-badge{padding:5px 10px;font-size:9px;color:var(--gd);letter-spacing:1px;border-left:1px solid var(--b1);}
+#minfo{margin-left:auto;padding:5px 10px;font-size:9px;color:var(--gm);letter-spacing:1px;}
+
+/* ── leaflet popups ── */
+.leaflet-popup-content-wrapper{background:#001800!important;border:1px solid var(--b2)!important;border-radius:2px!important;color:var(--g)!important;font-family:'Share Tech Mono',monospace!important;font-size:11px!important;box-shadow:var(--glow)!important;min-width:210px!important;}
+.leaflet-popup-tip{background:#001800!important;}
+.leaflet-popup-close-button{color:var(--g)!important;font-size:18px!important;top:4px!important;right:6px!important;}
+.pt{font-weight:bold;color:var(--g);margin-bottom:6px;border-bottom:1px solid var(--b1);padding-bottom:4px;letter-spacing:1px;}
+.pr{color:var(--gm);line-height:1.9;font-size:10px;}.pr b{color:var(--g);}
+.leaflet-control-zoom a{background:var(--gdk)!important;color:var(--g)!important;border:1px solid var(--b2)!important;font-family:'Share Tech Mono',monospace!important;}
+.leaflet-control-zoom a:hover{background:#002a0a!important;box-shadow:var(--glow)!important;}
