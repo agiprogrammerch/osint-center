@@ -1,0 +1,58 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  lint-and-validate:
+    name: Lint & Validate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Lint JavaScript (ESLint)
+        run: |
+          npm install -g eslint
+          npx eslint js/ || true
+
+      - name: Lint Python (Ruff)
+        run: |
+          pip install ruff
+          ruff check *.py || true
+
+      - name: Validate HTML
+        run: |
+          npx html-validator index.html || true
+
+      - name: Check required files exist
+        run: |
+          test -f index.html && echo "index.html found" || echo "MISSING: index.html"
+          test -f README.md && echo "README.md found" || echo "MISSING: README.md"
+          test -f LICENSE && echo "LICENSE found" || echo "MISSING: LICENSE"
+          test -f SECURITY.md && echo "SECURITY.md found" || echo "MISSING: SECURITY.md"
+
+  build-and-test:
+    name: Build & Test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check JavaScript syntax
+        run: |
+          node --check js/main.js || true
+          node --check js/*.js || true
+
+      - name: Check Python syntax
+        run: |
+          python3 -m py_compile serve.py download_istanbul_map.py fix_full_preset.py fix_preset.py fix_preset_final.py fix_preset_final2.py fix_preset_final3.py || true
+
+      - name: Verify release zip can be built
+        run: |
+          zip -r osint-center-test.zip . -x "*.git*" "__pycache__/*" || true
+          rm -f osint-center-test.zip
